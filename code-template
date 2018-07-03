@@ -1,0 +1,215 @@
+1、XSS漏洞解决方案
+        /**
+         * Encodes the provided input in a manner safe to place between to HTML tags
+         * @param input The untrusted input to be encoded
+         */
+        encodeForHTML: function(input) {
+            hasBeenInitialized = true;
+            var div = document.createElement('div');
+            $(div).text(input);
+            return $(div).html();
+        },
+ 2、输入框验证
+tiValidation: {
+	validator: [
+		{
+			rule: function (value) {
+				var nameReg = /^[ ]*[A-Za-z0-9-_\u4e00-\u9fa5]{1,64}[ ]*$/;
+				if (nameReg.test(value)) {
+					return true;
+				}
+				return $scope.i18n.evs.validName;
+			}
+		}
+	]
+}
+3、表格详情名称过长，添加换行操作
+.no-overflow{
+        word-break: break-all;
+        white-space: normal;
+        overflow: auto;
+    }
+
+4、设置需要显示的长度，溢出用...标识
+.line-limit-length{
+        max-width: 500px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+5、打开弹框，带参数$stateParams.serverGroupId，通过添加modalParams服务，去拿上面创过来的数据
+ tiModal.open({
+		templateUrl: "src/app/business/sdrs/views/dialogs/migrate.html",
+		controller: migrateCtrl,
+		modalClass: "attach-modal-class",
+		resolve: {
+			modalParams: function () {
+				return {
+					"serverGroupId": $stateParams.serverGroupId
+				};
+			}
+		}
+	});
+<style>
+    .attach-modal-class{
+        width: 700px;
+    }
+</style>
+6、大神写的处理选择下拉框的代码
+$scope.networkSourceVpc = {
+	"elementId": "sdrsSourceVpcSelect",
+	"selectedId": "",
+	"change": function (opts) {
+	},
+	"options": [],
+	"placeholder": i18n.sdrs_term_placeholder_no_available_vpc,
+	"init": function () {
+		var self = $scope.networkSourceVpc;
+		self.options = [];
+		_.each(vpcs, function(vpc, id){
+			self.options.push({
+				"label": vpc.name,
+				"id": id
+			});
+		});
+		self.selectedId = self.options.length ? self.options[0].id : "";
+		$scope.networkTargetVpc.init(self.selectedId);
+	}
+};
+7、带有这种{0}词条的，可以使用下面的方法
+var msg_show = $scope.i18nReplace(i18n.ecs_term_sendCmdSuccessAddNic_msg, {
+                    "0": $.encoder.encodeForHTML($scope.vmInfo.name)
+                });
+i18nReplace源码：用于替换国际化配置文件中的花括号
+var subRegRex = /\{\s*([^\|\}]+?)\s*(?:\|([^\}]*))?\s*\}/g;
+i18nReplace = function (s, o) {
+        return ((s.replace) ? s.replace(subRegRex, function (match, key) {
+            return (!angular.isUndefined(o[key])) ? o[key] : match;
+        }) : s);
+    };
+8、表格数据为空时显示，其中，class="ti-table-nodata"为显示的图片
+<tbody ng-if="protectedObjectListTable.displayed.length === 0">
+	<tr class="ti-table-nodata">
+		<td ti-colspan class="cti-tbody-empty" style="text-align: center;">{{protectedObjectListTable.noDadaTip}}</td>
+	</tr>
+</tbody>
+9、AngularJS中使用自定义指令
+使用：<sdrs-status-tip status="serverGroupInfo.status" style="vertical-align: middle; line-height: 31px"></sdrs-status-tip>
+sdrsModule.tinyDirective("sdrsStatusTip", function () {
+        return {
+            restrict: "EA",
+            template: "<span class=\"{{statusMap[status] && statusMap[status].icon}}\" ti-tip=\"statusMap[status] && statusMap[status].tip || status\"></span>",
+            replace: false,
+            scope: {
+                status: "="
+            },
+            link: function (scope, element, attr, ctrl, linker) {
+                scope.statusMap = {
+                    "available": {
+                        "tip": {
+                            "content": i18n.sdrs_term_statusAvailable_label,
+                            "position": "top-left"
+                        },
+                        "icon": "icon-cloud-action-state-regular"
+                    },
+                    "creating": {
+                        "tip": {
+                            "content": i18n.sdrs_term_creating_label,
+                            "position": "top-left"
+                        },
+                        "icon": "icon-cloud-action-state-ing"
+                    }
+                };
+            }
+        };
+    });
+10、defer的用法
+（1）常规//查询卷详情,resolve(volume)
+$scope.getVolumeInfo = function(volumeid) {
+	var deferred = $q.defer();
+	ebsVolumeListServ.showOneVolumeDetail($scope.projectId, volumeid, $scope.selectRegionId).then(function(data) {
+		deferred.resolve(data);
+	}).catch(function(jqXHR, textStatus, errorThrown) {
+		commonException.doException(jqXHR, exceptionMap, $scope.windowId);
+		deferred.reject();
+	});
+	return deferred.promise;
+};
+（2）
+	<!-- lang: js -->
+	var deferred = $q.defer();
+	var promise = deferred.promise;
+
+	// assign behavior before resolving
+	promise.then(function (data) {
+	  console.log('before:', data);
+	});
+
+	deferred.resolve('Oh look we\'re done already.')
+
+	// assign behavior after resolving
+	promise.then(function (data) {
+	  console.log('after:', data);
+	});
+
+11、tip处理（_.extend()这个函数的运用）
+var defaultTooltip = {
+                content: $scope.i18n.common_term_none_label,
+                width: 500,
+                position: "bottom-right"
+            };
+"tooltip": _.extend(_.clone(defaultTooltip), {content: $scope.i18n.ecs_term_subnet_tip}),
+
+12、对接口查询的数据返回，进行再次处理
+$q.all(promises).then(function(servers){
+                var successServers = [];
+                //将查询失败的服务器过滤掉，只保留查询成功的服务器
+                _.each(servers, function(server, index){
+                    if (server){
+                        successServers.push(server);
+                        server._deviceName = volume.attachments[index].device;
+                    }
+                });
+                return successServers;
+            }).then(function(successServers){
+                //查询完成的服务器，需要恢复选中状态
+                _.each(successServers, function(server){
+                    server.canViewMonitorData = volume.status === "in-use";
+                });
+                $scope.attachServerListTable.data = successServers;
+                $scope.attachServerListTable.srcData.data = $scope.attachServerListTable.transformData2Table(successServers);
+                updateServerEIP(successServers);
+            }).finally(function(){
+                $scope.loadingDisplay = false;
+            });
+
+13、广播和接收广播的运用
+$scope.$broadcast("$sourceVmIdEvent", {"sourceVmID": $scope.sourceVmID});
+$scope.$on("$sourceVmIdEvent", function (event, data) {
+	sourceServerID = data && data.sourceVmID;
+	init(sourceServerID)
+});
+14、
+比较下面两段代码，试述两段代码的不同之处
+// A--------------------------
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f();
+}
+checkscope();
+
+// B---------------------------
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f;
+}
+checkscope()();
+
