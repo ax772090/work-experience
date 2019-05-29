@@ -1,0 +1,102 @@
+Atom One Dark Theme
+Auto Close Tag
+Beautify
+Chinese (Simplified) Language Pack for Visual Studio Code
+Debugger for Chrome
+ESLint
+File Peek
+Git History
+IntelliJ IDEA Keybindings
+JavaScript (ES6) code snippets
+One Monokai Theme
+Output Colorizer
+prettier
+Panda Theme
+Path Autocomplete
+Path Intellisense
+Vetur
+vscode-element-helper
+vscode-icons
+Vue 2 Snippets
+vue-beautify
+
+配置：
+https://blog.csdn.net/SilenceJude/article/details/81589784?utm_source=blogxgwz0
+https://segmentfault.com/q/1010000011675886
+
+目前使用的配置
+{
+  // 以下为stylus配置
+  // "stylusSupremacy.insertColons": false,
+  // "stylusSupremacy.insertSemicolons": false,
+  // "stylusSupremacy.insertBraces": false,
+  // "stylusSupremacy.insertNewLineAroundImports": false,
+  // "stylusSupremacy.insertNewLineAroundBlocks": false,
+  // "vsicons.icons": "D:/icons.zip",
+  //自动获得路径，为true时，自动补全扩展名    
+  "path-autocomplete.extensionOnImport": true,
+  // HTML css Support的配置,实现标签补全
+  "css.remoteStyleSheets": [
+    "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+  ],
+  "git.ignoreMissingGitWarning": true,
+  "window.zoomLevel": 0,
+  "element-helper.version": "2.4",
+  //   先留着这个
+  // "files.associations": {
+  //   "*.vue": "html"
+  // },
+  // eslint 检测文件类型
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "html",
+      "autoFix": true
+    },
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+  "editor.fontSize": 16,
+  "editor.wrappingIndent": "deepIndent",
+  "editor.autoIndent": true,
+  "breadcrumbs.enabled": false, //文件导航
+  // tab 大小为2个空格
+  "editor.tabSize": 2,
+  "editor.wordWrapColumn": 200,
+  "prettier.semi": false,
+  "editor.renderControlCharacters": true,
+
+
+  "workbench.editor.enablePreview": false,
+  "editor.minimap.enabled": true, //右边缩略图
+  "files.autoSave": "off",
+  "editor.lineNumbers": "on",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+
+  "eslint.autoFixOnSave": true,
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  "vetur.format.defaultFormatter.js": "vscode-typescript",
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_attributes": "force-aligned"
+    }
+  },
+  "workbench.colorTheme": "One Monokai",
+  "diffEditor.ignoreTrimWhitespace": true,
+  "editor.wordWrap": "on",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "search.followSymlinks": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

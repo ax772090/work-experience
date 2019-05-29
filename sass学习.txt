@@ -1,0 +1,46 @@
+1、变量
+定义：$pt-20:20px;
+引用：.selected {
+  padding-top:$pt-20;
+}
+用中划线声明的变量可以使用下划线的方式引用，反之亦然
+.container{
+  h1,h2,h3{margin-bottom: .8rem}
+  }
+nav,aside{
+  a{color:blue}
+  }
+嵌套属性
+  类似：border-styleborder-widthborder-color以及border-*
+  nav {
+  border: {
+  style: solid;
+  width: 1px;
+  color: #ccc;
+  }
+}
+sass局部文件的文件名以下划线开头，sass就不会在编译时单独编译这个文件输出css，而只把这个文件用作导入，当一些样式需要在多个页面甚至多个项目中使用时，这非常有用
+变量默认值：（如果在引入的文件中没有定义该变量，则该值400px生效）
+$fancybox-width: 400px !default;
+嵌套导入：@import 'blue-theme'
+2、混合器mixin，使用@include，实现大段样式的重用
+定义：@mixin box-shadow {
+  transform: translateY(-4px);
+  animation-fill-mode: forwards;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+
+}
+引入：@import '../assets/mixin/_box-shadow-mix';
+使用：
+&:hover {
+    @include box-shadow;
+    .desc {
+      visibility: visible;
+      animation: fade-in 0.5s;
+    }
+    .btn {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    }
+  }
+  3、继承
+  
