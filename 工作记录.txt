@@ -1,0 +1,1590 @@
+2018/10/6-7
+1、vue再封装的组件如何传递props属性
+	<template>
+	  <el-select v-bind="$props"></el-select>
+	</template>
+	<script>
+	import { Select } from 'element-ui'
+	export default {
+	  name: 'my-select'
+	  props: {
+		...Select.props, // 这里继承内在组件的props
+		myProps: String,
+	  }
+	}
+	</script>
+2、slot-scope用法
+	<todo-list v-bind:todos="todos">
+	  <!-- 将 `slotProps` 定义为插槽作用域的名字 -->
+	  <template slot-scope="slotProps">
+		<!-- 为待办项自定义一个模板，-->
+		<!-- 通过 `slotProps` 定制每个待办项。-->
+		<span v-if="slotProps.todo.isComplete">✓</span>
+		{{ slotProps.todo.text }}
+	  </template>
+	</todo-list>
+2018/10/8
+1、$nextTick
+为了在数据变化之后，等待vue完成更新dom,可以在数据变化之后立即使用Vue.nextTick(callback)
+	Vue.component('example', {
+	  template: '<span>{{ message }}</span>',
+	  data: function () {
+		return {
+		  message: '没有更新'
+		}
+	  },
+	  methods: {
+		updateMessage: function () {
+		  this.message = '更新完成'
+		  console.log(this.$el.textContent) // => '没有更新'
+		  this.$nextTick(function () {
+			console.log(this.$el.textContent) // => '更新完成'
+		  })
+		}
+	  }
+	})
+2、$refs
+当需要在js里直接访问一个子组件时，可以通过ref特性给这个子组件赋予一个ID引用，像下面这样
+<base-input ref="usernameInput"></base-input>(如这个是在父组件里)，
+然后在定义这个ref的组件里(即父组件内)，可以通过this.$refs.usernameInput拿到<base-input>组件实例，拿到实例之后，就可以调用子组件实例里面的方法。
+3、基础资料/品牌信息页面 element-ui组件
+熟悉upload、form表单验证、select组件
+http-request：覆盖默认的上传行为，自定义上传
+调试代码
+
+2018/10/9
+
+2018/10/10
+重新安装svn,xmind软件
+1、解决不上传图片，保存报错问题
+2、解决图片框不显示样式问题
+3、保质期单位接口修改以及参数调整
+4、聆听产品经理对于各个模块的详细讲解
+
+<el-select v-model="dataForm.devUserId" filterable remote placeholder="搜索开发人员" :remote-method="userQuerySearch" :loading="userLoading">
+	  <el-option v-for="item in userOptions" :key="item.id" :label="item.name" :value="item.id">
+	  </el-option>
+	</el-select>
+2018/10/11
+父组件如何处发子组件的方法：this.$refs.mychild.parentHandleclick("嘿嘿嘿");在这个子组件的方法parentHandleclick里面怎么传值给父组件
+2018/10/12
+  // if (this.validateForm(this.activeName)) {
+      //   console.log("验证通过");
+      // }
+ERP-446：品牌信息页面接口联调
+2018/10/13
+问题：
+只能上传一张图片又要可以删除和查看大图
+2018/10/15
+解决点击没有验证表单问题
+if(valid){
+	// 这里子组件验证通过，告知父组件，然后进行下一步，如果为false，需要先解决验证问题
+  this.$emit('validate',{obj:true})
+}else{
+	this.$emit('validate',{obj:false})
+    return false
+}
+
+产品列表：
+组合SKU:备注可输入
+element-ui 解决 table 里包含表单验证的问题：https://www.cnblogs.com/Kummy/p/9470393.html
+图片上传控件，未上传时，鼠标悬停无点击效果，只有上传成功才会有
+1、解决图片显示问题
+
+2、解决【产品管理】各个模块bug
+
+3、【产品列表】进入产品的新增或编辑页面，组合SKU页签中子产品列表问题
+
+2018/10/16
+解决一个重要问题：
+Element 默认勾选表格 toggleRowSelection（重要：需要this.$nextTick这个包裹，切记）
+this.$nextTick(()=>{
+                this.initSelectStatus(this.childrenData,this.dataList)
+})
+1、新品开发图片显示过大
+2、组合数量校验
+3、组合SKU全选功能
+4、证书上传问题
+2018/10/17
+产品管理模块的产品分类下拉修改为级联选择器
+产品列表里面的产品图片格式限制
+下午13.40开始库存模块
+1、库存模块要货计划新增完成大部分静态页面编写
+2、处理产品管理模块产品分类级联显示
+3、修改相关bug单
+2018/10/20
+1、要货计划页面样式已完成，部分接口已通
+2、库存调出首页样式已完成，新增正在进行
+要货计划权限
+warehouse:whdeliveryplan:rebut驳回
+warehouse:whdeliveryplan:save
+warehouse:whdeliveryplan:
+warehouse:whdeliveryplan:update编辑保存
+warehouse:whdeliveryplan:list
+warehouse:whdeliveryplan:delete
+warehouse:whdeliveryplan:submit
+warehouse:whdeliveryplan:approval,warehouse:whdeliveryplan:transfer-out,warehouse:whdeliveryplan:revoke
+
+activiti:submit
+
+库存调拨权限
+warehouse:whtransferout:saveAndConfirm
+warehouse:whtransferout:save 新增
+warehouse:whtransferout:info 编辑
+warehouse:whtransferout:revoke 撤销
+warehouse:whtransferout:delete 删除
+warehouse:whtransferout:confirm确认调出
+
+
+收货任务
+warehouse:whtransferin:save到货签收
+
+收货记录
+warehouse:whtransferin:saveAndConfirm
+warehouse:whtransferin:info 编辑
+warehouse:whtransferin:revoke撤销
+warehouse:whtransferout:update修改
+warehouse:whtransferin:save保存
+warehouse:whtransferin:confirm 确认
+warehouse:whtransferin:delete删除（还没有接口）
+warehouse:whtransferin:info-in详情
+
+FBAshipment
+warehouse:mwslistinbound:list列表
+warehouse:mwslistinbound:info详情
+
+
+v-if="isAuth('warehouse:whdeliveryplan:approval') && scope.row.docStatus === '审核中'"
+
+2018/10/25
+put方式传值，如果只有一个参数，params用下面这种方式
+method: "put",
+params: {id:id}
+
+ selectedOption="docStatus"
+ //数据过滤器
+searchData: {
+	docStatus:"01"
+},
+1、处理问题单及FBA对应模块修改
+
+2、与后台进行接口联调
+
+3、目前审核工作流已通，要货计划里的调拨出库还有问题
+2018/11/15
+问题单：
+
+【产品列表/新品开发】新增或修改组合sku页签中添加产品，在添加产品窗口中全选列表批量添加，实际并未添加成功，单独选择则能正常添加
+【FBA仓调拨】要货计划新增或编辑页面，要货明细中点击新增行应过滤只显示Amazon平台的产品，目前其他平台的产品也显示出来了
+【海外仓-库存调拨】查看或编辑页面，装箱清单页面，物流方式和计划到达时间字段显示空的。新增时这两个字段的值有填写。
+2018/11/17
+审核工作流已通
+【海外仓/FBA仓调拨】新增要货计划页面，要货明细中最终确认数量不输入却能保存或提交成功。导致审核时最终确认数量默认为0却能审核通过
+【海外仓-收货任务】进行到货签收操作，破损数大于0，破损入库状态选择“冻结”，确认签收后，该产品的次品库存更新（加上破损数）。应该是冻结库存更新（加上破损数）。
+【海外仓-收货记录】列表展开行中，需增加字段“破损入库仓”、“破损入库状态”
+
+2018/11/19
+产品列表和新品开发添加查看功能
+2018/11/20
+处理基础资料各个模块的问题单
+处理所有table的操作列的显示样式，使其统一
+处理新品开发首页样式显示问题
+2018/11/21
+1、表格头文字过长显示问题（已解决）
+
+2、修改问题单
+
+3、封装自定义组件table
+难点：自定义template如何放到封装的组件里面
+
+产品列表：基本信息、辅助信息、仓库信息
+
+2018/11/23
+【采购计划】列表建议按照计划单号降序排列
+【采购计划】新增和修改页面，计划明细列表中，序号字段的名称显示的是“#”，请修改
+【其他出入库】其他出库新增或编辑页面，出库单号文本框未显示出来，且编辑进入也未显示出库单号
+1、处理采购管理模块问题单
+2、处理海外仓管理模块问题单
+3、处理表格表头过长问题
+
+采购计划：周
+采购订单：广泽，周
+
+product/channelsku/channelsku-list
+1、处理基础资料仓库模块新需求
+2、编写通用批注组件（带问号的）
+3、处理产品列表问题单
+2018/11/27
+基础资料-渠道新增
+    display: inline-flex;
+    justify-content: center;
+    flex-flow: row nowrap;
+    align-items: center;
+
+	E:\Erpcode\trunk\Code_Frontend\erp-web-ui\src\views\modules\warehouse\allocateAccounts\transferPrice\add-update.vue
+编写基础资料渠道新增页面的样式及接口
+修改产品管理模块的Amazon渠道表
+2018/11/29
+elementUI的table组件源码解读
+基础资料渠道新增
+http://3.sellingexpress.net:9011/ERP/WebPages/SystemMange/AmazonMWSGenerateAuthUrl.aspx?MarketPlaceName=Amazon.cn
+http://3.sellingexpress.net:9011/ERP/WebPages/SystemMange/AmazonMWSGenerateAuthUrl.aspx?MarketPlaceName=Amazon.ca
+
+warehouse/overseas/transfer-in/list-in
+库存接收单（FBA仓）
+fba-warehouse/fba-localmanagement/stock-receipt-list
+FBA入库情况（Received Inventory）
+FBA-warehouse/AmazonReport/fba-received-inventory
+FBA库存收发明细表
+FBA-warehouse/FBA-localmanagement/receive-dispatch-list
+
+基础资料渠道列表已调通
+库存接收单（FBA仓）样式编写
+2018/11/30
+封装产品分类级联下拉组件
+2018/12/1
+1、处理问题单
+2、修改FBA调拨业务逻辑
+3、修改海外仓库存调拨逻辑
+// `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+    // 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+    // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+    // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
+    // 请参考：https://lodash.com/docs#debounce·
+2018/12/4
+亚马逊管理订单
+amazonOrder/management/AmazonOrder-list
+Amazon多渠道配送订单
+amazonOrder/multiChannel/multiChannelOrder-list
+Amazon订单管理样式编写
+2018/12/5
+
+FBA入库情况-列表
+mws:reportinventoryreceiptsdata:list
+FBA入库情况-导出
+mws:reportinventoryreceiptsdata:export
+
+库存接收单（FBA仓）
+warehouse:whtransferin:mwslist-in （列表）
+warehouse:whtransferin:mwsinfo-in （查看）
+
+Amazon管理订单
+mws:mwslistorder:list (列表)
+mws:mwslistorder:info （详情）
+
+Amazon多渠道配送订单
+mws:mwsfulfillmentlistorder:list (列表)
+
+FBA库存收发明细表
+pur:warehousetradingrec:fbalist （列表）
+pur:warehousetradingrec:export  (导出)
+
+1、库存接收单（FBA）和Amazon多渠道配送订单样式编写及根据接口文档修改字段名称
+
+2018/12/6
+1、FBA库存收发明细样式
+2018/12/7
+目录结构调整
+Amazon-manage/statement-analysis/product-return-table/list
+
+2018/12/10
+Amazon管理订单
+mws/listorder/whshipment
+mws:listorder:whshipment  （自发货出库）、
+
+多渠道配送订单
+mws:fulfillmentlistorder:info（详情）
+1、Amazon订单管理模块样式调整及接口联调
+
+2、多渠道配送模块编辑样式编写
+2018/12/12
+warehouse/report/current-summary-sheet-list
+warehouse/report/receive-dispatch-list  （收发明细表）
+pur:warehousetradingrec:fbalist
+pur:warehousetradingrec:export
+2018/12/13
+warehouse:whdeliveryplan:list
+warehouse:whdeliveryplan:update
+warehouse:whtransferout:saveAndConfirm
+
+warehouse:whdeliveryplan:save,warehouse:whdeliveryplan:info,activiti:submit,activiti:approval,warehouse:whdeliveryplan:revoke,warehouse:whdeliveryplan:delete
+库存调出单接口联调
+
+暂无可导出数据
+
+warehouse:whdeliveryplan:update
+warehouse:whdeliveryplan:update
+warehouse/whtransferin/update
+
+warehouse:whdeliveryplanFba:approval,activiti:approval
+
+overseas:whtransferout:update
+
+mws:listorder:whshipment,warehouse:whoutstockso:save（自发货出库）
+
+销售出库样式修改及接口调整
+【销售出库自发货出库新增页面样式修改
+warehouse:whdeliveryplan:revoke
+warehouse:whtransferout:revoke
+warehouse:whtransferout:delete
+warehouse:whtransferout:delete
+
+warehouse:whtransferout:info
+warehouse:whtransferout:info
+
+warehouse:whdeliveryplan:info
+warehouse:whdeliveryFbaplan:info
+
+库存公司，仓管员（可以编辑）
+warehouse/whdeliveryplan/fbatransfer-out
+warehouse/whdeliveryplan/transfer-out
+
+FBA仓要货调拨
+2018/12/20
+待索赔清单接口联调完毕
+【待索赔清单样式修改及接口联调】
+bMwsOut
+2018/12/21
+库存管理-部门间借调申请
+2018/12/24
+FBA15C2BDKLJ
+调出必录
+调入不需要必录
+2018/12/25
+海外仓要货计划部分逻辑修改，修改审核流权限控制
+下拉级联问题
+2018/12/26
+给要货平台一个默认值，要货店铺现在不做必填判断
+2018/12/27
+海外仓的目的地仓库必填
+FBA的非必填
+优化分类下拉级联
+T01和T02都可以编辑----最最终确认数和原因
+2018/12/29
+产品列表复制功能
+添加海外仓和FBA仓菜单列表权限
+warehouse:whdeliveryplan:list
+2019/1/2
+审核详情公共样式及接口联调
+overseas:whdeliveryplan:transfer-out,warehouse:whdeliveryplan:transfer-out,warehouse:whtransferout:save
+
+prod/prodchannelsku/list
+WHDP201901030015
+overseas:activiti:getApproveHistory,activiti:getApproveHistory
+fba:activiti:getApproveHistory,activiti:getApproveHistory
+
+import selectAll from 'components/erp-select/select-all'
+
+<select-all
+                  v-model="dataForm.dictSaleStatus"
+                  :listDataOption="dictSaleStatusOptions"
+                  data-value="key"
+                  data-label="value"
+                  placeholder="销售状态"
+                ></select-all>
+
+有selectChange的
+				<select-all
+          v-model="dataForm.prodId"
+          :listDataOption="prodCodeOptions"
+          :isDisabled="isUpdate"
+          data-value="prodId"
+          data-label="prodCode"
+          :isSelectChange="true"
+          @selectChange="prodCodeChange"
+          placeholder="产品编码"
+        ></select-all>
+		
+		
+		// 提交
+    submitHandle: _.debounce(
+      async function submitHandle(row) {
+          let test2 = window.location.href
+          let test = test2.slice(test2.indexOf('#') + 1)
+        this.$http({
+          url: this.$http.adornUrl("activiti/submit"),
+          method: "post",
+        //   data: {
+        //     businessId: row.id,
+        //     processKey: "wh_delivery_plan"
+        //   }
+          data: {
+              businessId: row.id,
+              processKey: "wh_delivery_plan",
+              variablesMap:{
+                code:row.code,
+                codeName:'要货计划申请单',
+                routeUrl:test
+          }}
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: "操作成功",
+              type: "success",
+              duration: 1500,
+              onClose: () => {
+                this.getDataList();
+              }
+            });
+          } else {
+            this.$message.error(data.msg);
+          }
+        });
+      },
+      1000,
+      {
+        leading: true,
+        trailing: false
+      }
+    ),
+	
+	/erp-select'
+	created () {
+    // 出库类型
+    // this.$http.get(this.$http.adornUrl('basicData/queryDataDict2List'), { params: { dataDictKey: 'OUTSTOCK_TYPE' } }).then(({ data }) => { this.dictOutstockTypeOption = data.fontMaps })
+    // 公司
+    this.$http.get(this.$http.adornUrl('sys/organization/select')).then(({ data }) => { this.compIdOption = data.companyList })
+    // 单据状态
+    this.$http.get(this.$http.adornUrl('basicData/queryDataDict2List'), { params: { dataDictKey: 'APPROVAL_STATUS' } }).then(({ data }) => { this.dictDocStatusOption = data.fontMaps })
+    // 来源店铺
+    this.$http.get(this.$http.adornUrl('basic/basicchannel/listcombobox')).then(({ data }) => { this.channelIdOption = data.list })
+  },
+  【消息中心-海外仓和FBA审核/提交流程参数修改】
+  下载拣货单：warehouse:whdeliveryplan:print
+  标记拣货：warehouse:whdeliveryplan:updatePickStatus
+  
+  
+  pattern: /^[1-9]\d*$/,
+            message: "正整数",
+            trigger: "change"
+			
+			
+			 method: !this.dataForm.id ? "post" : "put",
+                    data: Object.assign(
+                      {},
+                      { whDeliveryPlanEntity: this.dataForm },
+                      {
+                        whDeliveryPlanDetailList: this.dataForm
+                          .deliveryDetailsList
+                      }
+                    )
+                  }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                      var url = window.location.href
+                      let submitId = data.id;
+                      if (submitId) {
+                        this.$http({
+                          url: this.$http.adornUrl("activiti/submit"),
+                          method: "post",
+                          data: {
+                            businessId: submitId,
+                            processKey: "wh_delivery_plan",
+
+                            routeUrl: url.slice(url.indexOf('#') + 1),
+                            code: data.code,
+                            docName: '要货计划申请单'
+                          }
+                        }).then(({ data }) => {
+                          if (data && data.code === 0) {
+                            this.$message({
+                              message: "提交成功",
+                              type: "success",
+                              duration: 1500,
+                              onClose: () => {
+                                this.clearCache("dataForm");
+                                // this.visible = false
+                                this.$emit("refreshDataList");
+								
+								
+								
+								var url = window.location.href
+                      let submitId = data.id;
+                      if (submitId) {
+                        this.$http({
+                          url: this.$http.adornUrl("activiti/submit"),
+                          method: "post",
+                          data: {
+                            businessId: submitId,
+                            processKey: "wh_delivery_plan",
+
+                            routeUrl: url.slice(url.indexOf('#') + 1),
+                            code: data.code,
+                            docName: '要货计划申请单'
+                          }
+                        }).then(({ data }) => {
+                          if (data && data.code === 0) {
+                            this.$message({
+                              message: "提交成功",
+                              type: "success",
+                              duration: 1500,
+                              onClose: () => {
+                                this.clearCache("dataForm");
+                                // this.visible = false
+                                this.$emit("refreshDataList");
+								
+								var url = window.location.href
+                        this.$http({
+                          url: this.$http.adornUrl("activiti/submit"),
+                          method: "post",
+                          data: {
+                            businessId: this.dataForm.id,
+                            processKey: "wh_delivery_plan",
+                            
+                            routeUrl: url.slice(url.indexOf('#') + 1),
+                            code: this.dataForm.code,
+                            docName: '要货计划申请单'
+                          }
+                        })
+						
+						let url = window.location.href
+        // 如果审核驳回发起人，不再去校验字段
+        if (this.dataForm.radio === 3 || this.dataForm.radio === 2) {
+          this.$http({
+            url: this.$http.adornUrl(`activiti/approval`),
+            method: "put",
+            data: {
+              taskId: this.taskId,
+              operation: this.dataForm.radio,
+              businessId: this.dataForm.id,
+              processKey: "wh_delivery_plan",
+
+              routeUrl:url.slice(url.indexOf('#') + 1),
+              code:this.dataForm.code,
+              codeName:'要货计划申请单',
+              comments: this.dataForm.comments,
+              variablesMap: { }
+			  
+message: `${
+                    !this.dataForm.id ? '新增' : '修改'
+                    }成功, 编码为:${data.entity.code}`,
+					
+					
+					:rules="dataRule.countOutboxQty"
+					:rules="this.node === 'T03'?dataRule.isInteger:[{ required: false, message: '单箱数量', trigger: 'change' }]"
+					:rules="[ { required: node === 'T03', message: '必填项', trigger: 'change' },
+                    { pattern: /^[1-9]\d*$/, message: '正整数', trigger: 'change' }]"
+					
+					:rules="[ 
+                    {pattern: /^[1-9]\d*$/, message: '正整数', trigger: 'change' },
+                    { required: Number(scope.row.qty) > Number(scope.row.qtyDefault), message: `数量不大于${scope.row.qtyDefault}`, trigger: 'blur' }]"
+					
+					:rules="[ 
+                    {pattern: /^[1-9]\d*$/, message: '正整数', trigger: 'change' },
+                    { required: true, message: scope.row.qty?(Number(scope.row.qty) - Number(scope.row.qtyDefault))?`数量不大于${scope.row.qtyDefault}`:'hh':'必填', trigger: 'blur' }]"
+					
+					
+					{ pattern: node === 'T03' && /^[1-9]\d*$/, message: '正整数', trigger: 'change' }
+					
+					
+					{
+          label: "货件状态",
+          value: "status",
+          inputType: "el-select",
+
+          httpUrl: "/basicData/queryDataDict2List",
+          requestParams: { dataDictKey: "FBA_SHIPMENT_OUT" },
+          dataSource: "fontMaps",
+          title: "status",
+          dataValue: "key",
+          dataLabel: "key",
+          placeholder: "货件状态"
+        }
+		预备要货数量
+		|| item.id === this.dataForm.fromWarehouseId 
+		
+		boxNumHandle(row,type) {
+        //   如果类型为1，则表示是要货数量改变
+            // 总重量解决2.3*3 = 6.89的问题
+        if(type === '1'){
+            //   要货数量赋值给最终确认数量
+            row.confirmQty = row.needQty
+             // 箱数=最终确认数量/单箱数量
+            row.countOutboxQty = Math.ceil(Number(row.confirmQty) / Number(row.outboxQty));
+            // 总重量=箱数*单箱重量
+          row.countOutboxWeight = ( Number(row.outboxWeight)*100*Number(row.countOutboxQty))/100
+        }else if(type === '2'){//单独的总箱数改变
+          // 总重量=箱数*单箱重量
+          row.countOutboxWeight = (Number(row.outboxWeight)*100*Number(row.countOutboxQty))/100
+        }else if (Number(row.outboxQty) === 0) {
+          row.countOutboxQty = 0
+            // 总重量=箱数*单箱重量
+          row.countOutboxWeight = (Number(row.outboxWeight)*100*Number(row.countOutboxQty))/100
+        } else if(type === '3'){//单箱重量单独修改
+            // 总重量=箱数*单箱重量
+          row.countOutboxWeight = (Number(row.outboxWeight)*100*Number(row.countOutboxQty))/100
+        }else{
+            // 箱数=最终确认数量/单箱数量
+            row.countOutboxQty = Math.ceil(Number(row.confirmQty) / Number(row.outboxQty));
+            // 总重量=箱数*单箱重量
+          row.countOutboxWeight = (Number(row.outboxWeight)*100*Number(row.countOutboxQty))/100
+        }
+      },
+2019/1/15
+FBA库存管理样式调整
+1、对审核组件重新进行封装，支持单独应用，方便后续新增、编辑、查看、审核等整合到一起
+2、已单独封装只有审核的弹窗组件，新品开发页面已验证
+2019/1/16
+【要货计划】审核页面要货明细中组合产品未加上组合标识
+【采购计划】新增采购计划前，查看他人创建的采购计划，然后新增计划保存时会传他人创建的采购计划code、adduser、addtime、upduser、updtime、confirmuser、confirmtime给后台。导致新增的采购计划列表中的用户名和时间字段内容不对。
+overseas:activiti:getApproveHistory,activiti:getApproveHistory(要货)
+stock:activiti:getApproveHistory,activiti:getApproveHistory（备货）
+perform:activiti:getApproveHistory,activiti:getApproveHistory（盘点）
+proddev:activiti:getApproveHistory,activiti:getApproveHistory（新品）
+消息中心跳转
+所有的审批详情放到单据状态里进行链接点击操作
+
+<!-- <erp-select
+                v-model="dataForm.dictExpectTransit"                        
+                httpUrl="basicData/queryDataDict2List"  
+                :requestParams="{dataDictKey: 'TRANSPORT_MODE'}"    
+                data-source="fontMaps"                        
+                data-value="key"                         
+                data-label="value"                       
+                placeholder="期望物流方式"                 
+                clearable >                                
+              </erp-select> -->
+			  
+			  pur/whinventory/list
+			  	
+GooBang Doo US
+
+
+let flowParams = {
+              processKey: "po_stock_wf",
+              routeUrl: getUrl(),
+              docName: "备货申请单",
+            };
+            this.$http({
+              url: this.$http.adornUrl(`pur/postock/submit`),
+              method: "post",
+              data: Object.assign({}, this.dataForm, {
+                flowParams: flowParams
+              })
+            })
+			
+			this.filterDepartment.orgId
+			
+			
+			optionPropsTemp:{
+            value: 'id',
+		        label: 'name',
+		        children: 'subCategoryNode'
+          },
+2019/01/22
+备货申请审核页面和新增页面合并
+:props="propsOptionTemp"
+
+warehouse/initial/initial-list
+warehouse/sites/sites-list
+
+:rules="dataRule.approveQty"
+
+businessId: row.id,
+            processKey: "site_delivery",
+
+            routeUrl: getUrl(),
+            code: row.code,
+            docName: '站点间调拨申请单'
+			prod/prodbasic/list
+			prod/prodbasic/list
+			
+			撤回流程
+			
+			pur:postock:approval,activiti:approval
+			proddev:activiti:approval,activiti:approval
+			warehouse:sitedelinfo:approve,activiti:approval
+			
+			:filter-method="selectFilter"
+			
+			站点间调拨问题单修改
+			|| !!~getFirstLetter(item[this.dataLabel]).indexOf(val)
+			
+			Amazon-manage/download-report/FBA-reservemanager
+			9999999
+			9999999
+			9999999
+			10000000
+			
+			:value='value'
+             v-on="inputListeners"
+			 :filter-method="selectFilter"
+			 name: "ABOX Home ES"
+18102315513522962542
+2019/2/13
+报表分析-待索赔清单代码逻辑调整及优化
+导入模板修改
+2019/2/15
+提取并优化要货计划保存和提交公共代码
+errVisible = false;fileList = [];importVisible = false;this.$emit('refreshDataList', 1)
+Amazon sku对照表，批量导入功能增加对重复数据的样式编写及接口联调
+
+let promise = new Promise(function(resolve, reject) {
+  console.log('Promise');
+  resolve();
+});
+
+let promise2 = new Promise(function(resolve, reject) {
+  console.log('Promise2');
+  resolve();
+});
+
+promise2.then(function() {
+  console.log('promise2-resolved.');
+})
+
+promise.then(function() {
+  console.log('resolved.');
+}).then(function() {
+  console.log('resolved2.');
+});
+
+console.log('Hi!');
+【盘点表审核页面整合到新增，编辑等页面，删除审核页面】
+其他平台订单样式调整
+
+prod/prodchannelsku/list（sku）
+prod/prodbasic/list（产品）
+warehouse/whreturnpo/whprodList（仓库）
+<!-- 添加明细 -->
+        <add-details ref="addDetails"
+                  @addDetailList="addList"></add-details>
+				  
+				  // 添加明细（新组件）
+import addDetails from '@/components/add-details/index.vue'
+this.$refs.addProd.init(
+          this.dataForm.id,
+          this.dataForm.poStockDetails,
+          { dictPlatformType: this.dataForm.dictPlatformType }
+        )
+		list = list.map(item => {
+            return {
+              sellerSkuId: item.id,
+              // channelId: item.channelId,
+              prodId: item.prodId,
+              // channelName: item.channelName,
+              // asin: item.asin,
+              // channelSku: item.channelSku,
+              prodCode: item.prodCode,
+              prodName: item.nameCh,
+              expectSales: 0,
+              monthStock: 0,
+              deliveryDays: 0,
+              transDays: 0,
+              expectTotalDays: 0,
+              expectTotalSales: 0,
+              needStock: 0,
+              transitQty: 0,
+              inventoryQty: 0,
+              allStock: 0,
+              leaderAdvice: 0,
+              prodId: item.id
+
+            }
+          })
+		
+						 /* 超链接 */
+.a-click-hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #45c2b5 !important;
+}
+prod:prodchannelsku:export
+
+【基础资料模块所有新增弹窗样式调整】
+<el-button type="danger"
+                         circle
+                         title="删除"
+                         :disabled="isDisabled"
+                         @click="deleteHandle(scope)">
+                <i class="iconfont el-icon-erp-ERP_shanchu"></i>
+              </el-button>
+			  
+			  <el-button type="text"
+                   v-if="isClick"
+                   :disabled="isDisabled"
+                   style="margin-bottom:10px;"
+                   @click="addHandle()">
+          <i class="iconfont el-icon-erp-numpickerplus"></i>添加明细行</el-button>
+		  
+2018/2/23
+产品复制添加变体及升级操作
+              if (!(this.dataForm.paramGroup.hasOwnProperty('Spec') && this.dataForm.paramGroup.hasOwnProperty('Color') && this.dataForm.paramGroup['Spec'].length > 0 && this.dataForm.paramGroup['Color'].length > 0)) {
+
+使用方法: <i class="iconfont erp-icon-chongzhi"></i>
+
+
+    重置: erp-icon-chongzhi
+    搜索: erp-icon-sousuo
+    新增: erp-icon-xinzeng
+    编辑: erp-icon-bianji
+    确认: erp-icon-queren
+    删除: erp-icon-shanchu
+    批量删除: erp-icon-piliangshanchu
+    确定: erp-icon-queding
+    取消: erp-icon-quxiao
+    保存: erp-icon-baocun
+    添加明细行: erp-icon-tianjiamingxi
+    下载: erp-icon-xiazai
+    禁用: erp-icon-jinyong
+    启用: erp-icon-qiyong
+    修改: erp-icon-xiugai
+    导入: erp-icon-daoru
+    导出: erp-icon-daochu
+    打印: erp-icon-dayin
+    列表: erp-icon-liebiao
+    清空: erp-icon-qingkong
+    历史记录: erp-icon-lishijilu
+    密码: erp-icon-mima
+    注意: erp-icon-zhuyi
+    复制: erp-icon-fuzhi
+	批量审核：erp-icon-piliangshenhe
+	
+	
+	show-checkbox
+               :check-on-click-node='true'
+			   {
+          id: '2',
+          type: '2',
+          label: '颜色'
+        }, {
+          id: '3',
+          type: '2',
+          label: '规格'
+        }
+		prod:prodskurules:save
+		warehouse:sitedelinfo:revokeApprove;warehouse:sitedelinfo:approve
+		warehouse:sitedelinfo:revokeApprove;warehouse:sitedelinfo:approve
+		warehouse:sitedelinfo:approve,activiti:approval
+		BHSQ20190228004
+		
+		for (const key in this.dataForm.paramGroup) {
+              if (!(this.dataForm.paramGroup[key].length > 0)) {
+                console.log(this.prodskurules)
+                for (const item in this.prodskurules) {
+                  if (this.prodskurules[item].key === key) {
+                    isFlag = false
+                    this.$notify.error({
+                      title: '提示',
+                      message: `请选择[${this.prodskurules[item].key}]`,
+                      duration: 5000
+                    })
+                    reject(valid)
+                    break
+                  }
+                }
+              } else {
+                isFlag = true
+                // break
+              }
+			  
+			  1087179238477160450  wx
+			  1075206579061735426
+			  salesUserId: "1075206579061735426"
+【要货计划单箱数量添加正整数校验】
+10000000
+10000000
+闭包需要谈作用域
+setTimeout函数是一个异步执行，浏览器引擎是按照顺序执行的，遇到setTimeout会将它放到执行队列里面，等到所有的同步执行完成后，
+if (this.dataForm.paramGroup[key].length > 0) {
+                isFlag = true
+              } else {
+                isFlag = false
+                break
+              }
+			  每个规格类型至少选择一项
+2019/03/08
+1、查漏补缺往图标添加title属性（已修改）
+2、编辑弹窗先获取数据之后再显示弹窗
+3、删除新增明细行之前弹窗代码（已修改）
+4、表格table各个列宽度调整（已检查修改展开和复选框）
+5、列表上方，使用el-row标签进行统一设置，去掉style（已修改）
+6、将getDataUrl提到create钩子函数里面
+7、列表上方el-radio-group组件替换（已修改）
+8、替换备注组件（已修改）
+
+基础资料：
+操作列修改为80px,fixed="right"
+
+npm install --save @/utils/request
+【库存管理模块-样式调整，代码逻辑优化，textareaall组件替换】
+696
+bAssemble
+E:\Erpcode\trunk\Code_Frontend\erp-web-ui\src\views\modules\Amazon-manage\FBA-voucher\stock-inventory\editor.vue
+WHDP201903190005
+B07NYQ3YLZ
+父beforeCreate->父created->父beforeMount->子beforeCreate->子created->子beforeMount->子mounted->父mounted
+else if (data && data.code === 1001) {
+          this.$nextTick(() => {
+            this.$refs.updatePassowrd.init()
+          })
+        } 
+		
+		
+		// this.loginHttp().then(({ data }) => {
+          //   if (data && data.code === 0) {
+          //     this.loginHandle()
+          //   }
+          //   // if (data.code === 500) {
+          //   //   this.$message.error(data.msg)
+          //   // }
+          //   // if (data.code === 501) {
+          //   //   this.$confirm(
+          //   //     `${data.msg}`,
+          //   //     '提示',
+          //   //     {
+          //   //       confirmButtonText: '确定',
+          //   //       cancelButtonText: '取消',
+          //   //       type: 'warning'
+          //   //     }
+          //   //   ).then(() => {
+          //   //     this.$nextTick(() => {
+          //   //       this.$refs.updatePassowrd.init()
+          //   //     })
+          //   //   })
+          //   // }
+          // })
+		  
+		  !dataForm.docInfo.id ? '盘点表新增' : isClick === true ? '盘点表修改' : '盘点表查看'
+\w 匹配包括下划线的任何单词字符。等价于'[A-Za-z0-9_]'。
+\W 匹配任何非单词字符。等价于 '[^A-Za-z0-9_]'。
+\d 匹配一个数字字符。等价于 [0-9]。
+\D 匹配一个非数字字符。等价于 [^0-9]。
+^(?=.*[a-zA-Z\d])[!-~]{8,16}$  求一密码正则表达式,由数字 字母 特殊字符组成.至少包含一个字母或数字,特殊字符可有可无.长度8~16
+var ckAll = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,16}$/;
+/(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*?]+)$)^[\w~!@#$%^&*?]{7,20}$/
+wx@772090wwwwwww
+wx772090wwwwww123
+
+备货列表-销售部门
+只针对组合产品，最终确认数不能大于算出来的数值
+【FBA出入库单据查看样式调整】
+配送出库添加日期过滤，与后台进行接口联调
+1、检查el-radio-group组件是否调用的是后台数据
+2、操作列各项置灰统一使用‘01’等而不是汉字
+区域负责人审核
+
+清理前端代码中无用的style及class，公共的类提取到公共的css中
+处理要货针对历史数据审核流控制
+onclick="javascript:_openDataLink({'url':'/collaboration/collaboration.do?method=newColl&from=templateNewColl&templateId=-6731434077930370594','obj':this,'sectionBeanId':'templeteSection','openType':'4' },event)"
+./1903291700/static/img/avatar.c58e465.png
+
+在屏幕刚好够表格显示时，会出现固定列显示不全的问题：https://blog.csdn.net/tooky_poom/article/details/78550323
+vue的table的设置流体高度有时候不出现滚动条问题
+sass是css预处理编译器
+margin：0 auto 18px
+http://erp.substanbo.com:8060/erp/#/login
+2018/4/2
+熟悉vue-cli3脚手架工具配置原理
+研究vue-router组件动态路由的配置方式
+了解css预处理编译器sass和stylus的语法形式
+
+
+中英文切换功能实现
+https://wx-shopping.myshopify.com/
+wx-shopping.myshopify.com/wx-shopping/772090
+1、二次封装datePicker组件
+
+2、熟悉shopify构建页面的方式
+
+3、了解liquid模板语言语法及相关api用法
+
+Section要在可视化首页设置里可以看到，需要设置presets属性,对于可以新增的多个模块，需要通过定义blocks属性值
+英国在夏令时间（日期是每年3月最后一个星期天，至每年10月最后一个星期天结束）
+欧洲夏令时是在每年的三月份的最后一个星期天的凌晨1点开始，然后在十月份的最后一个星期天的凌晨1点结束。
+3月份主要完成工作任务：1、辅助资料页面设计和后台接口联调；2、产品采购价目表剥离为单独的页面；3、供应商增加付款方式；4、用户登录时，校验密码强度是否符合规则，提示用户进行密码修改；5、要货计划增加查看组合品库存及子产品库存情况，以及增加区域负责人的审批流程；6、根据UI优化项清单优化各个模块，清理无用的style及提取公共的class.
+总结：3月份除了5个新需求涉及新页面开发，其他的主要工作是根据UI优化清单以及广泽分配的任务进行样式和代码的优化，将一些通用的样式类提取到公共的css中，一方面使得代码更简洁，另外也方便后续统一进行样式调整。在优化代码的过程中，发现系统里一些代码写的很繁琐，像一些循环，可以使用ES6的方式去写，这样使得代码更简洁易懂，同时对代码进行封装，方便后续人员开发。
+研究css3相关动画及动画插件
+
+.productItem .productLink {
+  display: block;
+  text-decoration: none;
+  background: #fff;
+  cursor: pointer;
+  -webkit-transition: 600ms;
+  transition: 600ms;
+}
+.productItem .productLink:hover {
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-box-shadow: 0 4px 50px rgba(0, 0, 0, .25);
+  box-shadow: 0 4px 50px rgba(0, 0, 0, .25);
+}
+.cyz_projects .cyz_project{
+	background: #FFF;
+	width: 270px;
+	height: 300px;
+	margin-right: 40px;
+	margin-bottom: 30px;
+	color:#999;
+	box-shadow: 0px 8px 18px rgba(0,0,0,0.06);
+	transition: all .2s ease-in-out;//0.2秒淡入淡出的效果
+	-webkit-transition: all .2s ease-in-out;//后面这两个是为了适应多个浏览器设置的
+	-moz-transition: all .2s ease-in-out;
+}
+.cyz_projects .cyz_project:hover{
+	box-shadow: 0px 8px 18px rgba(0,0,0,0.2);//鼠标放上去有阴影效果
+}
+.cyz_projects .cyz_project:nth-child(4n){//此处用法可以参考一下****************************
+	margin-right: 0px;
+}
+// &:after{
+  //   content:'';
+  //   display:block;
+  //   clear:both;
+  //   height:0;
+  //   visibility: hidden;
+  // }
+  @media screen and (max-width: 1280px) {
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+}
+@media screen and (max-width: 840px) {
+  .container {
+    max-width: 840px;
+    margin: 0 auto;
+  }
+}
+1、编写鼠标移动到产品上面的阴影动画效果，并封装成sass局部文件，方便其他地方引用
+
+2、熟悉sass预处理器的用法，包括变量定义，引入，嵌套属性的使用，混合器mixin的定义和@include引入，实现大段样式的重用
+封装动画属性：el-box-shadow-hover
+
+Manuals & Drivers
+Product Registration
+Warranty Info
+Process a Warranty
+Privacy Policy
+Terms of Use
+Upper Falls,MA 02464
++1 (617) 309-0528
+bd@substanbo.com
+©2019 Substanbo Inc. All rights reserved.
+substanbo-icondianhua
+substanbo-iconttww
+
+
+<el-timeline>
+          <el-timeline-item v-for="(item,index) in dataList"
+                            :key="index"
+                            :timestamp='item.lastUpdTime'
+                            placement='top'>
+            <el-card>
+              <h4>{{item.topic}}</h4>
+              <div v-html="item.content"></div>
+            </el-card>
+          </el-timeline-item>
+          <!-- <el-timeline-item timestamp="2019/3/15"
+                            placement="top">
+            <el-card>
+              <h4>1.0.7</h4>
+              <p>1. 增加备货申请生成采购计划的功能</p>
+              <p>2. 优化采购计划（汇总备货数据，查看备货源明细数据）</p>
+              <p>3. 补充采购计划的审批流程</p>
+              <p>4. 增加待采购清单查询、生成采购单的功能</p>
+              <p>5. 采购订单的优化；（自动携带供应商信息，自动获取采购价格，自动生成合同号等）</p>
+              <p>6. 新增加SN码登记和查询的功能；</p>
+              <p>7. 增加供应商的付款方式；</p>
+              <p>8. 产品采购价目表从产品中剥离出来，由采购部单独管理维护；</p>
+              <p>9. 优化了所有模块的样式效果；</p>
+              <p>10. 其他功能细点的优化。</p>
+            </el-card>
+          </el-timeline-item> -->
+          <!-- <el-timeline-item timestamp="2019/3/25"
+                            placement="top">
+            <el-card>
+              <h4>1.0.9</h4>
+              <p>1. 要货计划的审批流程调整：专员提交→区域负责人审批→销售主管审批→仓库审批→物流审批</p>
+              <p>2. 要货计划保存时判断可用库存的优化：区分组合品和非组合品（校验非组合品国内仓的可用库存够不够，并显示组合品的子件库存情况）</p>
+              <p>3. 由于欧洲库存共享：FBA欧洲站仓库调整成一个账号设立一个仓库，该账号下所有店铺绑定该仓库。由此引起的历史数据的处理：</p>
+              <p>&nbsp;&nbsp; ○ 要货计划单据目的仓库更新</p>
+              <p>&nbsp;&nbsp; ○ 库存调出单的调入仓库更新</p>
+              <p>&nbsp;&nbsp; ○ 库存表中欧洲各店铺的库存数：调整成新仓库的库存</p>
+              <p>&nbsp;&nbsp; ○ 产品收发明细表中涉及欧洲个店铺的库存数：调整成新仓库的数据</p>
+              <p>4. 备货申请审批流程的调整：专员提交→→区域负责人审批→销售主管审批→PMC审批→销售经理审批</p>
+              <p>5. 采购计划审批流程的调整：PMC提交→销售经理审批</p>
+              <p>6. 增加系统安全性考虑：密码强度校验、密码规则设置，以及登录时提示用户修改密码等</p>
+              <p>7. 组织架构的调整及部门数据权限（支持部门能查看本部门及其下级以下部门的所有数据）</p>
+              <p>8. 待采购清单列表优化；</p>
+              <p>9. 优化了所有菜单。</p>
+              <p>10. 其他已知BUG的处理及系统性优化。</p>
+            </el-card>
+			
+          </el-timeline-item> -->
+        </el-timeline>
+【版本发布登录显示最新版本信息，查看历史功能】
+
+css如何修改默认滚动条样式
+
+	处理官网需要修改的问题
+	实现回到顶部
+	
+	 btnTop.onclick = function () {
+    window.cancelAnimationFrame(timer)
+    timer = requestAnimationFrame(function fn () {
+      if (oTop > 0) {
+        btnTop.style.display = 'block'
+        document.body.scrollTop = document.documentElement.scrollTop = oTop - 50
+        timer = requestAnimationFrame(fn)
+      } else {
+        cancelAnimationFrame(timer)
+        btnTop.style.display = 'none'
+      }
+    })
+  }
+  排查苹果浏览器不能打开erp系统的原因
+  Maintenance outside
+  shopify埋点，谷歌埋点
+  
+  www.bomaker.com
+  UA-138973611-1
+  
+  /^(0|[1-9]\d*)(\s|$|\.\d{1,2}\b)/
+  /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/.test(value)
+  
+  
+systems/sys/version-publish
+
+sys:message:publish
+
+
+1. 待采购清单生成采购订单维度调整
+2. 采购订单调整：
+   ○ 采购合同的打印和下载格式调整
+   ○ 新增订单依据新的规则从采购价目表中获取采购产品的单价和税率
+   ○ 采购订单列表增加按照预计交货日期升序排序
+3. 新品开发和产品列表优化：辅助信息页签所有字段增加必填校验；基本信息页签中规格型号、开发人员增加必填校验
+4. 亚马逊模块优化：
+   ○ 各业务列表和导出增加“账号”字段
+   ○ 结算一览表（回款）列表搜索条件“店铺”去掉必录要求，进入列表即可查看该用户授权店铺的所有数据。
+5、增加采购计划执行情况表
+
+
+Amazon-manage/statement-analysis/pending-claim/list
+
+http://localhost:8001/#/Amazon-manage-statement-analysis/pending-claim/list
+http://localhost:8001/#/Amazon-manage-statement-analysis/outside-maintenance/outside-tab
+Amazon-manage/statement-analysis/outside-maintenance/outside-tab
+Amazon-manage-statement-analysis/pending-claim/list
+Amazon-manage/statement-analysis/outside-maintenance/outside-tab
+
+searchOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        {
+          label: '国家',
+          value: 'country',
+          inputType: 'el-select',
+          httpUrl: 'basicData/queryAllCountry',
+          dataSource: 'countries',
+          dataValue: 'id',
+          dataLabel: 'nameCn',
+          placeholder: '国家'
+        },
+        {
+          label: '自定义SKU',
+          value: 'prodCode',
+          inputType: 'el-input'
+        },
+        {
+          label: 'SellerSKU',
+          value: 'sellersku',
+          inputType: 'el-input'
+        },
+        {
+          label: '总金额',
+          value: 'amount',
+          inputType: 'el-input'
+        }
+      ],
+	  
+	   searchOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        {
+          label: '店铺',
+          value: 'channelId',
+          inputType: 'el-select',
+          httpUrl: 'list/combobox/ownChannel',
+          dataSource: 'list',
+          dataValue: 'id',
+          dataLabel: 'name',
+          placeholder: '店铺'
+        },
+        {
+          label: 'SellerSKU',
+          value: 'sellersku',
+          inputType: 'el-input'
+        },
+        {
+          label: '总金额',
+          value: 'amount',
+          inputType: 'el-input'
+        }
+      ],
+	  
+	  searchOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        // {
+        //   label: '店铺',
+        //   value: 'channel',
+        //   inputType: 'el-select',
+        //   httpUrl: 'list/combobox/ownChannel',
+        //   dataSource: 'list',
+        //   dataValue: 'id',
+        //   dataLabel: 'name',
+        //   placeholder: '店铺'
+        // },
+        {
+          label: '国家',
+          value: 'country',
+          inputType: 'el-select',
+          httpUrl: 'basicData/queryAllCountry',
+          dataSource: 'countries',
+          dataValue: 'id',
+          dataLabel: 'nameCn',
+          placeholder: '国家'
+        }
+      ],
+
+<el-form :model="dataForm"
+             :rules="dataRule"
+             :inline="true"
+             label-width="100px"
+             ref="dataForm"
+             @keyup.enter.native="getDataList()">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="核销日期"
+                        prop="planDate">
+            <el-date-picker v-model="dataForm.planDate"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="年/月/日"></el-date-picker>
+          </el-form-item>
+           <el-form-item label="结算公司"
+                        prop="srcCompId">
+            <select-all v-model="dataForm.srcCompId"
+                        :listDataOption="compIdOption"
+                        data-value="orgId"
+                        data-label="name"
+                        placeholder='选择结算公司'></select-all>
+          </el-form-item>
+          <el-form-item label="供应商"
+                        prop="supplierId">
+            <select-seach v-model="dataForm.supplierId"
+                          httpUrl="basic/basicsupplier/list-used?b_used=true"
+                          httpMethod="get"
+                          data-label="name"
+                          data-value="id"
+                          data-source="list"
+                          placeholder='选择供应商'></select-seach>
+          </el-form-item>
+          <el-form-item label="结算币种"
+                        prop="currencyId">
+            <select-all v-model="dataForm.currencyId"
+                        :listDataOption="currencyIdOptions"
+                        data-value="id"
+                        data-label="name"
+                        placeholder="选择结算币种"></select-all>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="核销类型"
+                        prop="verifyType">
+            <select-all v-model="dataForm.verifyType"
+                        :listDataOption="verfifyTypeOption"
+                        data-value="orgId"
+                        data-label="name"
+                        placeholder=''></select-all>
+          </el-form-item>
+          <el-form-item label="预付款单号"
+                        prop="code">
+            <el-input v-model="dataForm.code"
+                      placeholder=""
+                      :disabled="codeDisable"></el-input>
+          </el-form-item>
+          <el-form-item label="付款金额"
+                        prop="payMoney">
+            <el-input v-model="dataForm.money"
+                      placeholder="录入已付款金额"
+                      :disabled="codeDisable"></el-input>
+          </el-form-item>
+          <el-form-item label="核销金额"
+                        prop="verifyMoney">
+            <el-input v-model="dataForm.verifyMoney"
+                      placeholder=""
+                      :disabled="true"></el-input>
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="4">
+          <el-form-item>
+            <el-button type="primary"
+                       @click="submitForm('dataForm')"><i class="iconfont erp-icon-sousuo"></i>核销</el-button>
+          </el-form-item>
+        </el-col> -->
+      </el-row>
+    </el-form>
+
+	  overseasOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        {
+          label: '国家',
+          value: 'country',
+          inputType: 'el-select',
+          httpUrl: 'basicData/queryAllCountry',
+          dataSource: 'countries',
+          dataValue: 'id',
+          dataLabel: 'nameCn',
+          placeholder: '国家'
+        },
+        {
+          label: '自定义SKU',
+          value: 'prodCode',
+          inputType: 'el-input'
+        },
+        {
+          label: 'SellerSKU',
+          value: 'sellersku',
+          inputType: 'el-input'
+        },
+        {
+          label: '总金额',
+          value: 'amount',
+          inputType: 'el-input'
+        }
+      ],
+      otherOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        {
+          label: '店铺',
+          value: 'channelId',
+          inputType: 'el-select',
+          httpUrl: 'list/combobox/ownChannel',
+          dataSource: 'list',
+          dataValue: 'id',
+          dataLabel: 'name',
+          placeholder: '店铺'
+        },
+        {
+          label: 'SellerSKU',
+          value: 'sellersku',
+          inputType: 'el-input'
+        },
+        {
+          label: '总金额',
+          value: 'amount',
+          inputType: 'el-input'
+        }
+      ],
+      vatOptions: [
+        // {
+        //   label: '月份',
+        //   value: 'startDate,endDate',
+        //   inputType: 'el-daterange'
+        // },
+        {
+          label: '国家',
+          value: 'country',
+          inputType: 'el-select',
+          httpUrl: 'basicData/queryAllCountry',
+          dataSource: 'countries',
+          dataValue: 'id',
+          dataLabel: 'nameCn',
+          placeholder: '国家'
+        }
+      ],
+	  
+	  
+应付款手工核销：financial/payment-verify/verify-tab
+ 核销明细-列表：fin:paymentverifyrecord:verifylist
+  核销：fin:paymentverifyrecord:verify
+  核销记录-列表：fin:paymentverifyrecord:list
+  反核销：fin:paymentverifyrecord:reverseVerify
+  供应商对账单-汇总：financial/supplier-order/supplier-order-list
+  列表：fin:supplierbillsum:list
+  下载：fin:supplierbillsum:download
+  
+  根据新需求调整平台外费用维护各个模块
+  [平台外费用维护逻辑修改]
+  
+  // for (const valItem of val) {
+      //   for (const item of this.prePayCodeArray) {
+      //     if (valItem === item.key) {
+      //       mountTemp += Number(item.money)
+      //     }
+      //   }
+      // }
+	  
+	  自定义sku
+	  <select-seach v-model="dataForm.prodCode"
+                      httpUrl="/prod/prodbasic/queryForComplete"
+                      httpMethod="get"
+                      data-label-right='name_ch'
+                      :showName='true'
+                      requestParamsKey="code"
+                      data-label="code"
+                      data-value="code"
+                      data-source="list"
+                      :isSelectChange="isSelectchange"
+                      @selectChange="prodCodeChange"
+                      @clearHandle='clearHandle'></select-seach>
+
+编写头程运费单价样式，与后台进行接口联调
+
+<el-row>
+        <el-col :span="5">
+          <el-form-item label="核销日期"
+                        prop="verifyDate">
+            <el-date-picker v-model="dataForm.verifyDate"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="年/月/日"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="结算公司"
+                        prop="compId">
+            <select-all v-model="dataForm.compId"
+                        :listDataOption="compIdOption"
+                        data-value="orgId"
+                        data-label="name"
+                        placeholder='选择结算公司'
+                        :isSelectChange="true"
+                        @selectChange="requireChange"></select-all>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="供应商"
+                        prop="supplier">
+            <select-seach v-model="dataForm.supplier"
+                          httpUrl="basic/basicsupplier/list-used?b_used=true"
+                          httpMethod="get"
+                          data-label="name"
+                          data-value="id"
+                          data-source="list"
+                          placeholder='选择供应商'
+                          isSelectChange="true"
+                          @selectChange="requireChange"></select-seach>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="结算币种"
+                        prop="currency">
+            <select-all v-model="dataForm.currency"
+                        :listDataOption="currencyIdOptions"
+                        data-value="id"
+                        data-label="name"
+                        placeholder="选择结算币种"
+                        :isSelectChange="true"
+                        @selectChange="requireChange"></select-all>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">
+          <el-form-item label="核销类型"
+                        prop="verifyType">
+            <select-all v-model="dataForm.verifyType"
+                        :listDataOption="verifyTypeOption"
+                        data-value="key"
+                        data-label="value"
+                        placeholder='选择核销类型'
+                        :isSelectChange="true"
+                        @selectChange='verifyTypeChange'></select-all>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="预付款单号"
+                        prop="prePayCode">
+            <select-seach v-model="dataForm.prePayCode"
+                          httpUrl="fin/finpopayment/queryForComplete"
+                          requestParamsKey="code"
+                          httpMethod="get"
+                          data-label="prePayCode"
+                          data-value="prePayCode"
+                          data-source="list"
+                          placeholder='搜索单号'
+                          :isDisabled='prePayDisable'
+                          isSelectChange="true"
+                          @selectChange="prePayCodeChange"></select-seach>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="付款金额"
+                        prop="prePayAmount">
+            <el-input v-model="dataForm.prePayAmount"
+                      type="Number"
+                      placeholder="录入已付款金额"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="核销金额"
+                        prop="verifyMoney">
+            <el-input v-model="dataForm.verifyMoney"
+                      placeholder=""
+                      :disabled="true"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="">
+            <el-tooltip :content="verifyTip"
+                        placement="bottom"
+                        effect="dark">
+              <el-button type="primary"
+                         @click="verifyHandle('dataForm')"
+                         v-if="isAuth('fin:paymentverifyrecord:verify')"><i class="iconfont erp-icon-shenhe"></i>核销</el-button>
+
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+      </el-row>
+	  
+	  BI-forms/sales-forecast/forecast-list
+	  
+	  
+	  /^(-(([0-9]+\.\d{1,2})|([0-9]*[1-9][0-9]*\.\d{1,2})|([0-9]*[1-9][0-9]*)))$/
+	  /^(-(([1-9]+\.\d{1,2})|([0-9]*[1-9][0-9]*\.\d{1,2})|([0-9]*[1-9][0-9]*)))$/
+	  
+	  Amazon-manage/download-report/stock-action
+	  【库存动作详情页面样式编写】
+	  
+	  Access-Control-Allow-Origin: http://localhost:8001
+	  
+	  BI-forms/sales-forecast/forecast-list
+	  BI-forms/sales-forecast/forecast-list
+	  
+	  
+	  WHDP201905100001
+	  http://192.168.3.114:8008/erp-web/warehouse/whdeliveryplan/transfer-out/57645797576645017615
+	  http://192.168.3.114:8008/erp-web/warehouse/whtransferout/info/57645797576645017615?t=1558320374500&id=57645797576645017615
+	  还没有调通：
+	  销售订单已搞
+	  产品组装库存接收单查看
+	  库存接收单查看
+	  其他出库单
+	  
+	  
